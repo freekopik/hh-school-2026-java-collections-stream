@@ -46,9 +46,7 @@ public class Task8 {
         .collect(Collectors.toSet());
     
 
-    Set<Resume> allResumes = personService.findResumes(personIds);
-
-    Map<Integer, Set<Resume>> groupedResumes = allResumes.stream()
+    Map<Integer, Set<Resume>> groupedResumes = personService.findResumes(personIds).stream()
         .collect(Collectors.groupingBy(Resume::personId, Collectors.toSet()));
     
     return persons.stream()

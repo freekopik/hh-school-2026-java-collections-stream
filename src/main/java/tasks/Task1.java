@@ -1,9 +1,8 @@
 package tasks;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import common.Person;
 import common.PersonService;
@@ -25,8 +24,6 @@ public class Task1 {
   }
 
   public List<Person> findOrderedPersons(List<Integer> personIds) {
-    Set<Person> persons = personService.findPersons(personIds);
-
     /*
       Тут мы могли бы решить через два for. Псевдокод:
         ans = []
@@ -38,11 +35,11 @@ public class Task1 {
       Сложность - O(n * m) из-за вложенности. 
     */
 
-    // По-моему, здесь Stream не даёт выигрыша
-    Map<Integer, Person> idToPerson = new HashMap<>();
-    for (Person p : persons) { // O(n)
-        idToPerson.put(p.id(), p);
-    }
+    Map<Integer, Person> idToPerson = personService.findPersons(personIds).stream() // O(n)
+        .collect(Collectors.toMap(
+            Person::id,
+            p -> p
+        ));
 
     return personIds.stream()
         .map(idToPerson::get) // O(m)

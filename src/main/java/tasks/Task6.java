@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import common.Area;
 import common.Person;
@@ -36,16 +35,11 @@ public class Task6 {
     }          
 
     return persons.stream()
-        .flatMap(person -> {
-          Set<Integer> areaIdSet = personAreaIds.get(person.id());
-
-          if (areaIdSet == null) {
-              return Stream.empty();
-          }
-
-          return areaIdSet.stream()
-                .map(x -> String.format("%s - %s", person.firstName(), areaIdToRegion.get(x)));
-        })
+        .flatMap(person -> personAreaIds.getOrDefault(person.id(), Set.of()).stream()
+          .map(areaId -> String.format("%s - %s", 
+              person.firstName(), 
+              areaIdToRegion.getOrDefault(areaId, "")))
+        )
         .collect(Collectors.toSet());
   }
 }

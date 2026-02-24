@@ -36,12 +36,9 @@ public class Task9 {
 
   public Set<String> getDifferentNames(List<Person> persons) { 
       /*
-        getNames(persons) создаёт лишний список на ходу, поэтому есть смысл продублировать логику.
-        Здесь мы работаем только с чистым потоком. 
         .distinct() не нужен, поскольку toSet() сделает то же самое.
       */
-      return getCleanedStream(persons)
-              .map(Person::firstName)
+      return getNames(persons).stream()
               .collect(Collectors.toSet());
   }
   // Тут фронтовая логика, делаем за них работу - склеиваем ФИО
@@ -49,7 +46,6 @@ public class Task9 {
     /* 
       Здесь лучше подходит .joining().
       Обычная конкатенация добавит лишний пробел, если фамилия или имя будет null. 
-      Плюсом так побыстрее. 
     */
     return Stream.of(person.secondName(), person.firstName(), person.middleName())
             .filter(Objects::nonNull) 
@@ -61,7 +57,8 @@ public class Task9 {
     return persons.stream() // здесь просто переписал for-loop на stream
         .collect(Collectors.toMap(
           Person::id,
-          Person::firstName
+          p -> convertPersonToString(p),
+          (oldValue, newValue) -> oldValue
         ));
   }
 
